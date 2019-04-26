@@ -44,7 +44,9 @@ Defaults to 'RefClosure'."))
         .arg(clap::Arg::with_name("dbuscrate").long("dbuscrate").takes_value(true).value_name("dbus")
              .help("Name of dbus crate, defaults to 'dbus'."))
         .arg(clap::Arg::with_name("skipprefix").short("i").long("skipprefix").takes_value(true).value_name("PREFIX")
-             .help("If present, skips a specific prefix for interface names, e g 'org.freedesktop.DBus.'."))  
+             .help("If present, skips a specific prefix for interface names, e g 'org.freedesktop.DBus.'."))
+        .arg(clap::Arg::with_name("usefutures").short("f").long("use-futures")
+            .help("Use `impl Future` over `Result` for return types"))
         .get_matches();
 
     let s = 
@@ -82,7 +84,8 @@ Defaults to 'RefClosure'."))
 
     let opts = generate::GenOpts { methodtype: mtype.map(|x| x.into()), dbuscrate: dbuscrate.into(),
         skipprefix: matches.value_of("skipprefix").map(|x| x.into()), serveraccess: maccess,
-        genericvariant: matches.is_present("genericvariant") };
+        genericvariant: matches.is_present("genericvariant"),
+        usefutures: matches.is_present("usefutures") };
 
     let mut stdout = std::io::stdout();
     let h: &mut std::io::Write = &mut stdout;
